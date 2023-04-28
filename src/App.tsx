@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import init, { fcc } from 'wasm-lib';
+import init, { fcc } from './pkg/wasm_lib';
 
 function App() {
   const [fileData, setFileData] = React.useState<string | null>(null);
