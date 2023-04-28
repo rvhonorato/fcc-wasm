@@ -1,14 +1,11 @@
 import React from 'react';
 import './App.css';
-import init, { add, decode_base64 } from 'wasm-lib';
-import { decode } from 'punycode';
+import init, { fcc } from 'wasm-lib';
 
 function App() {
-  const [ans, setAns] = React.useState(0);
   const [fileData, setFileData] = React.useState<string | null>(null);
+  const [clusterOut, setClusterOut] = React.useState<string | null>(null);
 
-  let x = 1;
-  let y = 1;
 
   // Read a file as base64
   const readFileAsBase64 = (file: File) => {
@@ -31,42 +28,28 @@ function App() {
     if (e.target.files) {
       readFileAsBase64(e.target.files[0])
         .then((res) => {
-          // init().then(() => {
-          //   let v = decode_base64(res as string);
-          //   console.log("File size", v);
-          // });
           setFileData(res as string);
         });
     };
-    init().then(() => {
-      // let result = add(x, y);
-      // let v = add(x, y);
-      if (fileData) {
-        let v = decode_base64(fileData as string);
-        console.log("File size", v);
-      }
-      // setAns(result);
-      // console.log("File size", v);
-    });
-
     // console.log("File uploaded", e.target.files);
-    // let size = decode_base64(fileData as string);
-    // console.log("File size", v);
   };
 
-  // Do it as soon as the component is mounted
-  // React.useEffect(() => {
-  //   init().then((res) => {
-  //     let result = add(x, y);
-  //     setAns(result);
-  //   });
-  // }, []);
+  const runWasm = () => {
+    init().then(() => {
+      let v = fcc(fileData as string);
+      setClusterOut(v);
+      // console.log("File size", v);
+    });
+  };
+
   return (
     <div className="App">
       <input type="file" onChange={handleFileChange} />
-      <p>
-        {fileData}
-      </p>
+      <br />
+      <button onClick={runWasm}>Run FCC</button>
+      <pre>
+        {clusterOut}
+      </pre>
     </div>
   );
 }
